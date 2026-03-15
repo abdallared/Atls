@@ -8,7 +8,9 @@ import { resolveMediaUrl } from "@/lib/media";
 const BannerSection = () => {
   const { seoSettings } = useData();
   const homeSeo = seoSettings.find((s) => s.page_path === "/");
-  const bannerImage = homeSeo?.og_image || aboutImg;
+  const seoImage = homeSeo?.og_image?.trim();
+  const hasCustomImage = !!seoImage && !seoImage.includes("placeholder.svg");
+  const bannerImage = hasCustomImage ? seoImage : aboutImg;
 
   return (
     <section className="py-16 md:py-24 bg-background">
