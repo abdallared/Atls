@@ -60,9 +60,20 @@ This project is built with:
 - shadcn-ui
 - Tailwind CSS
 
-## How can I deploy this project?
+## How can I deploy this project to GitHub Pages?
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+This repository is configured to auto-deploy to GitHub Pages using GitHub Actions.
+
+1. Push your code to the `main` branch.
+2. In GitHub, open **Settings → Pages**.
+3. Set **Source** to **GitHub Actions**.
+4. Wait for the `Deploy to GitHub Pages` workflow to finish.
+
+Notes:
+
+- The workflow publishes the Vite `dist/` output.
+- A `404.html` fallback is generated for React Router SPA routes.
+- The Vite base path is set automatically from your repository name.
 
 ## Can I connect a custom domain to my Lovable project?
 
