@@ -2,8 +2,14 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import aboutImg from "@/assets/about-lighting.png";
 import { motion } from "framer-motion";
+import { useData } from "@/contexts/DataContext";
+import { resolveMediaUrl } from "@/lib/media";
 
 const BannerSection = () => {
+  const { seoSettings } = useData();
+  const homeSeo = seoSettings.find((s) => s.page_path === "/");
+  const bannerImage = homeSeo?.og_image || aboutImg;
+
   return (
     <section className="py-16 md:py-24 bg-background">
       <div className="container mx-auto px-4">
@@ -16,7 +22,15 @@ const BannerSection = () => {
             transition={{ duration: 0.7, ease: "easeOut" }}
             className="bg-muted rounded-lg aspect-[4/3] flex items-center justify-center overflow-hidden"
           >
-            <img src={aboutImg} alt="حلول الإضاءة - منازل، مكاتب، متاجر، ورش" className="w-full h-full object-cover rounded-lg" />
+            <img
+              src={resolveMediaUrl(bannerImage)}
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = resolveMediaUrl(aboutImg);
+              }}
+              alt="حلول الإضاءة - منازل، مكاتب، متاجر، ورش"
+              className="w-full h-full object-cover rounded-lg"
+            />
           </motion.div>
 
           {/* Content */}

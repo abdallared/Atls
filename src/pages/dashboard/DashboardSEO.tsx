@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import type { DbSeoSetting } from "@/contexts/DataContext";
+import { Upload } from "lucide-react";
 
 const DashboardSEO = () => {
   const { seoSettings, updateSeoSetting } = useData();
@@ -19,6 +20,17 @@ const DashboardSEO = () => {
 
   const setField = (id: string, field: string, value: string) => {
     setLocalSeo(prev => ({ ...prev, [id]: { ...prev[id], [field]: value } }));
+  };
+
+  const handleOgImageUpload = (seoId: string, file?: File) => {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64 = reader.result as string;
+      setField(seoId, "og_image", base64);
+      toast({ title: "تم رفع الصورة", description: "اضغط حفظ لتطبيق التغيير" });
+    };
+    reader.readAsDataURL(file);
   };
 
   const saveSeo = async (seo: DbSeoSetting) => {
@@ -58,6 +70,33 @@ const DashboardSEO = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div className="text-right"><Label className="text-right">OG Title</Label><Input className="text-right" value={getField(seo, "og_title")} onChange={(e) => setField(seo.id, "og_title", e.target.value)} /></div>
                 <div className="text-right"><Label className="text-right">Robots</Label><Input className="text-right" value={getField(seo, "robots")} onChange={(e) => setField(seo.id, "robots", e.target.value)} /></div>
+              </div>
+              <div className="text-right">
+                <Label className="text-right">رابط صورة الصفحة (OG Image)</Label>
+                <div className="flex items-center gap-2 mt-1">
+                  <Input
+                    className="text-right"
+                    value={getField(seo, "og_image")}
+                    onChange={(e) => setField(seo.id, "og_image", e.target.value)}
+                    placeholder="/images/banner.jpg أو https://example.com/banner.jpg"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="gap-2 whitespace-nowrap"
+                    onClick={() => document.getElementById(`og-image-upload-${seo.id}`)?.click()}
+                  >
+                    <Upload size={14} />
+                    Browse
+                  </Button>
+                  <input
+                    id={`og-image-upload-${seo.id}`}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => handleOgImageUpload(seo.id, e.target.files?.[0])}
+                  />
+                </div>
               </div>
             </CardContent>
           </Card>
