@@ -1,5 +1,33 @@
+import { useEffect, useState } from "react";
 import { useData } from "@/contexts/DataContext";
 import { motion } from "framer-motion";
+import { resolveMediaUrl } from "@/lib/media";
+
+type BrandLogoProps = {
+  name: string;
+  logo: string | null;
+};
+
+const BrandLogo = ({ name, logo }: BrandLogoProps) => {
+  const [logoSrc, setLogoSrc] = useState<string | null>(logo ? resolveMediaUrl(logo) : null);
+
+  useEffect(() => {
+    setLogoSrc(logo ? resolveMediaUrl(logo) : null);
+  }, [logo]);
+
+  if (!logoSrc) {
+    return <span className="text-lg font-bold text-muted-foreground hover:text-foreground transition-colors">{name}</span>;
+  }
+
+  return (
+    <img
+      src={logoSrc}
+      alt={name}
+      onError={() => setLogoSrc(null)}
+      className="h-10 md:h-12 w-auto object-contain"
+    />
+  );
+};
 
 const BrandsShowcase = () => {
   const { brands } = useData();
@@ -32,17 +60,7 @@ const BrandsShowcase = () => {
               transition={{ duration: 0.4, delay: 0.3 + i * 0.1 }}
               className="flex items-center justify-center grayscale hover:grayscale-0 opacity-60 hover:opacity-100 transition-all duration-300"
             >
-              {brand.logo ? (
-                <img
-                  src={brand.logo}
-                  alt={brand.name}
-                  className="h-10 md:h-12 w-auto object-contain"
-                />
-              ) : (
-                <span className="text-lg font-bold text-muted-foreground hover:text-foreground transition-colors">
-                  {brand.name}
-                </span>
-              )}
+              <BrandLogo name={brand.name} logo={brand.logo} />
             </motion.div>
           ))}
         </div>

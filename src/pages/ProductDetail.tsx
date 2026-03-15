@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, MessageCircle } from "lucide-react";
 import { companyInfo } from "@/data/products";
+import { resolveMediaUrl } from "@/lib/media";
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -42,7 +43,15 @@ const ProductDetail = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
             <div className="bg-muted rounded-lg aspect-square flex items-center justify-center">
-              <img src={product.image || "/placeholder.svg"} alt={product.name_ar} className="w-full h-full object-cover rounded-lg" />
+              <img
+                src={resolveMediaUrl(product.image)}
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = resolveMediaUrl();
+                }}
+                alt={product.name_ar}
+                className="w-full h-full object-cover rounded-lg"
+              />
             </div>
 
             <div>
