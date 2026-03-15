@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { resolveMediaUrl } from "@/lib/media";
 
 interface ProductFilterProps {
   selectedCategory: string;
@@ -51,7 +52,14 @@ const ProductFilter = ({
               <SelectItem key={b.id} value={b.id}>
                 <span className="flex items-center gap-2">
                   {b.logo && b.logo !== '/placeholder.svg' && (
-                    <img src={b.logo} alt={b.name} className="w-5 h-5 object-contain" />
+                    <img
+                      src={resolveMediaUrl(b.logo)}
+                      alt={b.name}
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                      }}
+                      className="w-5 h-5 object-contain"
+                    />
                   )}
                   {b.name}
                 </span>

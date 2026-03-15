@@ -14,6 +14,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Plus, Pencil, Trash2, Search, Filter, Upload, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { DbProduct } from "@/contexts/DataContext";
+import { resolveMediaUrl } from "@/lib/media";
 
 const DashboardProducts = () => {
   const { products, categories, brands, addProduct, updateProduct, deleteProduct } = useData();
@@ -373,7 +374,15 @@ const DashboardProducts = () => {
                   />
                   {form.image && (
                     <div className="mt-2">
-                      <img src={form.image} alt="Preview" className="w-32 h-32 object-cover rounded border" />
+                      <img
+                        src={resolveMediaUrl(form.image)}
+                        onError={(e) => {
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = resolveMediaUrl();
+                        }}
+                        alt="Preview"
+                        className="w-32 h-32 object-cover rounded border"
+                      />
                     </div>
                   )}
                 </div>
@@ -414,7 +423,15 @@ const DashboardProducts = () => {
                     <div className="grid grid-cols-3 gap-2 mt-3">
                       {form.images.map((img, idx) => (
                         <div key={idx} className="relative group">
-                          <img src={img} alt="" className="w-full h-20 object-cover rounded border" />
+                          <img
+                            src={resolveMediaUrl(img)}
+                            onError={(e) => {
+                              e.currentTarget.onerror = null;
+                              e.currentTarget.src = resolveMediaUrl();
+                            }}
+                            alt=""
+                            className="w-full h-20 object-cover rounded border"
+                          />
                           <div className="absolute top-1 right-1 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                             <Button
                               type="button"
@@ -652,7 +669,11 @@ const DashboardProducts = () => {
                   <TableCell>
                     <div className="flex items-center gap-3">
                       <img 
-                        src={p.image || "/placeholder.svg"} 
+                        src={resolveMediaUrl(p.image)} 
+                        onError={(e) => {
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = resolveMediaUrl();
+                        }}
                         alt={p.name_ar}
                         className="w-12 h-12 object-cover rounded border"
                       />
