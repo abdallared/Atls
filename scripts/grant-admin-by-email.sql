@@ -5,7 +5,7 @@
 
 DO $$
 DECLARE
-  target_email text := 'fathyahmed123456.o@gmail.com';
+  target_email text := 'admin@atls.com';
   target_user_id uuid;
 BEGIN
   SELECT id INTO target_user_id

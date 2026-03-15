@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -52,9 +52,6 @@ const Login = () => {
             </div>
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? "جاري الدخول..." : "دخول"}
-            </Button>
-            <Button type="button" variant="outline" className="w-full" asChild>
-              <Link to="/signup">إنشاء حساب جديد</Link>
             </Button>
           </form>
         </CardContent>
