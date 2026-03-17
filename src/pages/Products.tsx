@@ -29,6 +29,22 @@ const Products = () => {
     });
   }, [products, selectedCategory, selectedBrand, searchQuery, showAvailableOnly]);
 
+  const electricalCategoryId = useMemo(() => {
+    return categories.find((category) => {
+      const normalizedArabic = (category.name_ar || "").replace(/\s+/g, "");
+      const normalizedEnglish = (category.name || "").toLowerCase();
+      return normalizedArabic.includes("كهرب") || normalizedEnglish.includes("electric");
+    })?.id || "";
+  }, [categories]);
+
+  const homeAppliancesCategoryId = useMemo(() => {
+    return categories.find((category) => {
+      const normalizedArabic = (category.name_ar || "").replace(/\s+/g, "");
+      const normalizedEnglish = (category.name || "").toLowerCase();
+      return normalizedArabic.includes("منزلي") || normalizedEnglish.includes("home");
+    })?.id || "";
+  }, [categories]);
+
   const filterProps = {
     selectedCategory, setSelectedCategory,
     selectedBrand, setSelectedBrand,
@@ -44,9 +60,41 @@ const Products = () => {
         <div className="container mx-auto px-4 py-8">
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-2xl md:text-3xl font-bold text-foreground">المنتجات</h1>
+            <div className="flex items-center gap-2 md:hidden">
+              <Button
+                variant={selectedCategory === electricalCategoryId ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSelectedCategory(selectedCategory === electricalCategoryId ? "" : electricalCategoryId)}
+                disabled={!electricalCategoryId}
+              >
+                الكهربائية
+              </Button>
+              <Button
+                variant={selectedCategory === homeAppliancesCategoryId ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSelectedCategory(selectedCategory === homeAppliancesCategoryId ? "" : homeAppliancesCategoryId)}
+                disabled={!homeAppliancesCategoryId}
+              >
+                الأجهزة المنزلية
+              </Button>
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="outline" size="sm" className="gap-2">
+                    <Filter size={16} /> فلتر
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right" className="w-72">
+                  <SheetTitle>فلتر المنتجات</SheetTitle>
+                  <div className="mt-4">
+                    <ProductFilter {...filterProps} />
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </div>
+
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="outline" size="sm" className="md:hidden gap-2">
+                <Button variant="outline" size="sm" className="hidden md:inline-flex gap-2">
                   <Filter size={16} /> فلتر
                 </Button>
               </SheetTrigger>
