@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Globe, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logoAtlas from "@/assets/logo-atlas.png";
 
@@ -14,6 +14,60 @@ const navLinks = [
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
+  const isHomePage = location.pathname === "/";
+
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [location.pathname]);
+
+  if (isHomePage) {
+    return (
+      <nav className="absolute top-0 inset-x-0 z-50">
+        <div className="w-full px-3 md:px-5 lg:px-6 pt-5 md:pt-6 flex items-start justify-between">
+          <Link to="/" className="flex items-center">
+            <img src={logoAtlas} alt="أطلس - Atlas" className="h-28 md:h-32 brightness-0 invert" />
+          </Link>
+
+          <div className="relative">
+            <div className="flex items-center gap-3 rounded-2xl border border-primary-foreground/30 bg-primary-foreground/10 px-6 py-3.5 backdrop-blur-sm">
+              <div className="flex items-center gap-1.5 text-primary-foreground/90 text-lg font-medium">
+                <span>AR</span>
+                <Globe size={20} />
+              </div>
+
+              <button
+                onClick={() => setMobileOpen((prev) => !prev)}
+                className="text-primary-foreground p-1"
+                aria-label="Toggle menu"
+              >
+                {mobileOpen ? <X size={30} /> : <Menu size={30} />}
+              </button>
+            </div>
+
+            {mobileOpen && (
+              <div className="absolute left-0 mt-3 w-72 rounded-2xl border border-primary-foreground/20 bg-primary/95 p-2 shadow-lg">
+                <div className="flex flex-col gap-1">
+                  {navLinks.map((link) => (
+                    <Link
+                      key={link.path}
+                      to={link.path}
+                      className={`px-4 py-3 rounded-xl text-base font-medium transition-colors ${
+                        location.pathname === link.path
+                          ? "bg-primary-foreground/20 text-primary-foreground"
+                          : "text-primary-foreground/85 hover:bg-primary-foreground/10"
+                      }`}
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </nav>
+    );
+  }
 
   return (
     <nav className="sticky top-0 z-50 h-20 bg-primary border-b border-border shadow-sm">
