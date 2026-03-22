@@ -23,8 +23,8 @@ const Navbar = () => {
   if (isHomePage) {
     return (
       <nav className="absolute top-0 inset-x-0 z-50">
-        <div className="w-full px-3 md:px-5 lg:px-6 pt-5 md:pt-6 flex items-center justify-between">
-          <Link to="/" className="flex items-center">
+        <div className="w-full pr-3 pl-5 md:px-5 lg:px-6 pt-5 md:pt-6 flex items-center justify-between">
+          <Link to="/" className="flex items-center -mr-2 md:-mr-3">
             <img src={logoAtlas} alt="أطلس - Atlas" className="h-20 md:h-24 brightness-0 invert" />
           </Link>
 
