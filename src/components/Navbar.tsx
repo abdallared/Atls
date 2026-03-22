@@ -29,10 +29,10 @@ const Navbar = () => {
           </Link>
 
           <div className="relative">
-            <div className="flex items-center gap-3 rounded-2xl border border-primary-foreground/30 bg-primary-foreground/10 px-6 py-3.5 backdrop-blur-sm">
-              <div className="flex items-center gap-1.5 text-primary-foreground/90 text-lg font-medium">
+            <div className="flex items-center gap-2 rounded-2xl border border-primary-foreground/30 bg-primary-foreground/10 px-4 py-2.5 backdrop-blur-sm">
+              <div className="flex items-center gap-1 text-primary-foreground/90 text-sm font-medium">
                 <span>AR</span>
-                <Globe size={20} />
+                <Globe size={16} />
               </div>
 
               <button
@@ -40,7 +40,7 @@ const Navbar = () => {
                 className="text-primary-foreground p-1"
                 aria-label="Toggle menu"
               >
-                {mobileOpen ? <X size={30} /> : <Menu size={30} />}
+                {mobileOpen ? <X size={24} /> : <Menu size={24} />}
               </button>
             </div>
 
