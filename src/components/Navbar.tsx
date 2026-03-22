@@ -23,24 +23,24 @@ const Navbar = () => {
   if (isHomePage) {
     return (
       <nav className="absolute top-0 inset-x-0 z-50">
-        <div className="w-full px-3 md:px-5 lg:px-6 pt-5 md:pt-6 flex items-start justify-between">
+        <div className="w-full px-3 md:px-5 lg:px-6 pt-5 md:pt-6 flex items-center justify-between">
           <Link to="/" className="flex items-center">
             <img src={logoAtlas} alt="أطلس - Atlas" className="h-28 md:h-32 brightness-0 invert" />
           </Link>
 
           <div className="relative">
-            <div className="flex items-center gap-2 rounded-2xl border border-primary-foreground/30 bg-primary-foreground/10 px-4 py-2.5 backdrop-blur-sm">
-              <div className="flex items-center gap-1 text-primary-foreground/90 text-sm font-medium">
+            <div className="flex items-center gap-2 rounded-xl md:rounded-2xl border border-primary-foreground/30 bg-primary-foreground/10 px-3 py-2 md:px-4 md:py-2.5 backdrop-blur-sm">
+              <div className="flex items-center gap-1 text-primary-foreground/90 text-xs md:text-sm font-medium">
                 <span>AR</span>
-                <Globe size={16} />
+                <Globe size={14} className="md:w-4 md:h-4" />
               </div>
 
               <button
                 onClick={() => setMobileOpen((prev) => !prev)}
-                className="text-primary-foreground p-1"
+                className="text-primary-foreground p-0.5 md:p-1"
                 aria-label="Toggle menu"
               >
-                {mobileOpen ? <X size={24} /> : <Menu size={24} />}
+                {mobileOpen ? <X size={20} className="md:w-6 md:h-6" /> : <Menu size={20} className="md:w-6 md:h-6" />}
               </button>
             </div>
 
