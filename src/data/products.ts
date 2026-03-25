@@ -280,10 +280,10 @@ export const companyInfo = {
     tiktok: "https://tiktok.com/@atlas",
   },
   stats: [
-    { value: "+15", label: "سنة خبرة" },
-    { value: "+50K", label: "عميل سعيد" },
-    { value: "+100", label: "ماركة عالمية" },
-    { value: "24/7", label: "دعم فني" },
+    { value: "+35", label: "عاماً من الخبرة" },
+    { value: "9", label: "فروع في خدمتك" },
+    { value: "وكيل معتمد", label: "لماركات دولية" },
+    { value: "+1000", label: "منتج عالمي" },
   ],
   features: [
     { icon: "shield", title: "جودة مضمونة", description: "نوفر منتجات عالية الجودة من أفضل الماركات العالمية" },
