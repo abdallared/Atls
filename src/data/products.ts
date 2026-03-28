@@ -4,8 +4,8 @@ import dlSquareImg from "@/assets/products/dl-square.webp";
 import mangoMidiImg from "@/assets/products/mango-midi.webp";
 import eliaDlImg from "@/assets/products/elia-dl.webp";
 import ebPlusImg from "@/assets/products/eb-plus.webp";
-import hero2Img from "@/assets/hero/hero-2.png";
 import hero3Img from "@/assets/hero/hero-3.png";
+import ledHeroImg from "../../led.jpeg";
 
 export interface Product {
   id: string;
@@ -300,15 +300,15 @@ export const companyInfo = {
 export const heroSlides = [
   {
     id: 2,
-    title: "إضاءة LED احترافية",
-    subtitle: "أحدث تقنيات الإضاءة من أفضل الماركات العالمية",
+    title: "عالم المواد الكهربائيه",
+    subtitle: "كل ما تحتاجه من مواد و جوده فى مكان واحد",
     cta: "اكتشف الإضاءة",
-    image: hero2Img,
+    image: ledHeroImg,
   },
   {
     id: 3,
     title: "أجهزة منزلية متميزة",
-    subtitle: "كل ما تحتاجه لمطبخك وبيتك في مكان واحد",
+    subtitle: "كل ما تحتاجه لبيتك في مكان واحد",
     cta: "تسوق الآن",
     image: hero3Img,
   },
