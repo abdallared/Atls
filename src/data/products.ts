@@ -4,7 +4,6 @@ import dlSquareImg from "@/assets/products/dl-square.webp";
 import mangoMidiImg from "@/assets/products/mango-midi.webp";
 import eliaDlImg from "@/assets/products/elia-dl.webp";
 import ebPlusImg from "@/assets/products/eb-plus.webp";
-import hero1Img from "@/assets/hero/hero-1.png";
 import hero2Img from "@/assets/hero/hero-2.png";
 import hero3Img from "@/assets/hero/hero-3.png";
 
@@ -299,13 +298,6 @@ export const companyInfo = {
 };
 
 export const heroSlides = [
-  {
-    id: 1,
-    title: "منتجات عالية الجودة",
-    subtitle: "تخدم شركتك وتكبر بيزنسك",
-    cta: "تصفح المنتجات",
-    image: hero1Img,
-  },
   {
     id: 2,
     title: "إضاءة LED احترافية",

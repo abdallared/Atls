@@ -43,7 +43,7 @@ const HeroSlider = () => {
                   {slide.subtitle}
                 </p>
                 <Button asChild size="lg" variant="secondary" className="text-lg px-10 py-6 rounded-xl">
-                  <Link to="/products">كل ما تحتجه فى مكان واحد</Link>
+                  <Link to="/products">منتجاتنا</Link>
                 </Button>
               </div>
             </div>
