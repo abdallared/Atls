@@ -1,6 +1,20 @@
 import { Link } from "react-router-dom";
 import { Phone, Mail, MapPin, Facebook, Instagram } from "lucide-react";
 import { companyInfo } from "@/data/products";
+import logoAtlas from "@/assets/logo-atlas.png";
+
+const TikTokIcon = ({ size = 18 }: { size?: number }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    viewBox="0 0 16 16"
+    fill="currentColor"
+    aria-hidden="true"
+  >
+    <path d="M9 0h3.15a4.17 4.17 0 0 0 1.19 2.67A4.17 4.17 0 0 0 16 3.85v3.03a7.2 7.2 0 0 1-4-1.34v5.32a5.54 5.54 0 0 1-5.55 5.54A5.53 5.53 0 0 1 0 10.86 5.54 5.54 0 0 1 6.45 5.3v3.17a2.4 2.4 0 0 0-.58-.08A2.46 2.46 0 0 0 3.42 10.85a2.46 2.46 0 0 0 2.45 2.46 2.46 2.46 0 0 0 2.46-2.46V0Z" />
+  </svg>
+);
 
 const Footer = () => {
   return (
@@ -9,7 +23,13 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Company Info */}
           <div>
-            <h3 className="text-xl font-bold mb-4">ATLAS أطلس</h3>
+            <h3 className="mb-4" aria-label="ATLAS أطلس">
+              <img
+                src={logoAtlas}
+                alt="ATLAS أطلس"
+                className="h-16 w-auto object-contain [filter:brightness(0)_invert(1)]"
+              />
+            </h3>
             <p className="text-primary-foreground/70 text-sm leading-relaxed mb-4">
               {companyInfo.fullName}
             </p>
@@ -31,6 +51,15 @@ const Footer = () => {
                 aria-label="Instagram"
               >
                 <Instagram size={18} />
+              </a>
+              <a
+                href={companyInfo.social.tiktok}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-9 h-9 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-primary-foreground/20 transition-colors"
+                aria-label="TikTok"
+              >
+                <TikTokIcon size={18} />
               </a>
             </div>
           </div>

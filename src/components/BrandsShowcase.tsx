@@ -48,7 +48,7 @@ const BrandsShowcase = () => {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="text-center text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-8"
         >
-          الماركات اللي نوفرها
+          موزع معتمد
         </motion.h2>
         <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12">
           {brands.map((brand, i) => (

@@ -277,17 +277,17 @@ export const companyInfo = {
   social: {
     facebook: "https://facebook.com/atlas",
     instagram: "https://instagram.com/atlas",
-    tiktok: "https://tiktok.com/@atlas",
+    tiktok: "https://www.tiktok.com/@atlasly5?_r=1&_t=ZS-954cOLNaCLI",
   },
   stats: [
     { value: "+35", label: "عاماً من الخبرة" },
     { value: "9", label: "فروع في خدمتك" },
-    { value: "وكيل معتمد", label: "لماركات دولية" },
+    { value: "موزع معتمد", label: "لماركات دولية" },
     { value: "+1000", label: "منتج عالمي" },
   ],
   features: [
     { icon: "shield", title: "جودة مضمونة", description: "نوفر منتجات عالية الجودة من أفضل الماركات العالمية" },
-    { icon: "truck", title: "توصيل سريع", description: "نوصل لحد باب بيتك في أسرع وقت" },
+    { icon: "truck", title: "شبكة توزيع واسعة", description: "نغطي مختلف المناطق بكفاءة لتوصيل المنتجات أينما كنت" },
     { icon: "headphones", title: "خدمة عملاء", description: "فريق دعم متواجد على مدار الساعة لخدمتك" },
     { icon: "grid", title: "تشكيلة واسعة", description: "أكبر تشكيلة من المنتجات الكهربائية والمنزلية" },
   ],

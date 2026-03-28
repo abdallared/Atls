@@ -21,7 +21,7 @@ const FeaturesSection = () => {
           className="text-center mb-12"
         >
           <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">مميزاتنا</h2>
-          <p className="text-muted-foreground max-w-xl mx-auto">ليه تختار أطلس؟</p>
+          <p className="text-muted-foreground max-w-xl mx-auto">لماذا أطلس ؟</p>
         </motion.div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
