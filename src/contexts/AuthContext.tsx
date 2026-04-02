@@ -1,11 +1,27 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { User, Session } from "@supabase/supabase-js";
+import { ID } from "appwrite";
+import { appwriteAccount, getAppwriteUser, isAppwriteReady, type AppwriteUser } from "@/integrations/appwrite/client";
+
+type AuthUser = User | AppwriteUser;
+
+const authProvider = (import.meta.env.VITE_AUTH_PROVIDER || "supabase").toLowerCase();
+const isAppwriteProvider = authProvider === "appwrite";
+const appwriteAdminEmails = String(import.meta.env.VITE_APPWRITE_ADMIN_EMAILS || "")
+  .split(",")
+  .map((email) => email.trim().toLowerCase())
+  .filter(Boolean);
+
+const isAdminEmail = (email?: string) => {
+  if (!email) return false;
+  return appwriteAdminEmails.includes(email.toLowerCase());
+};
 
 interface AuthContextType {
   isAuthenticated: boolean;
   isAdmin: boolean;
-  user: User | null;
+  user: AuthUser | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<{ success: boolean; reason?: "invalid_credentials" | "email_not_confirmed" | "not_admin"; error?: string }>;
   signup: (email: string, password: string) => Promise<{ success: boolean; isAdmin: boolean; needsEmailConfirmation: boolean; error?: string }>;
@@ -21,7 +37,7 @@ export const useAuth = () => {
 };
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -31,6 +47,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   useEffect(() => {
+    if (isAppwriteProvider) {
+      if (!isAppwriteReady) {
+        setUser(null);
+        setIsAdmin(false);
+        setLoading(false);
+        return;
+      }
+
+      getAppwriteUser().then((currentUser) => {
+        setUser(currentUser);
+        setIsAdmin(isAdminEmail(currentUser?.email));
+        setLoading(false);
+      });
+
+      return;
+    }
+
     let isMounted = true;
 
     // Restore session on mount
@@ -66,6 +99,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const login = useCallback(async (email: string, password: string) => {
+    if (isAppwriteProvider) {
+      if (!isAppwriteReady) {
+        return { success: false, reason: "invalid_credentials" as const, error: "Appwrite is not configured." };
+      }
+
+      try {
+        await appwriteAccount.createEmailPasswordSession(email, password);
+        const currentUser = await getAppwriteUser();
+
+        if (!currentUser) {
+          return { success: false, reason: "invalid_credentials" as const };
+        }
+
+        if (!isAdminEmail(currentUser.email)) {
+          await appwriteAccount.deleteSession("current");
+          setUser(null);
+          setIsAdmin(false);
+          return { success: false, reason: "not_admin" as const };
+        }
+
+        setUser(currentUser);
+        setIsAdmin(true);
+        return { success: true };
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "";
+        return { success: false, reason: "invalid_credentials" as const, error: message };
+      }
+    }
+
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error || !data.user) {
       const message = error?.message || "";
@@ -89,6 +151,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const signup = useCallback(async (email: string, password: string) => {
+    if (isAppwriteProvider) {
+      if (!isAppwriteReady) {
+        return { success: false, isAdmin: false, needsEmailConfirmation: false, error: "Appwrite is not configured." };
+      }
+
+      try {
+        await appwriteAccount.create(ID.unique(), email, password);
+        await appwriteAccount.createEmailPasswordSession(email, password);
+        const currentUser = await getAppwriteUser();
+        const isAdminUser = isAdminEmail(currentUser?.email);
+
+        if (!isAdminUser) {
+          await appwriteAccount.deleteSession("current");
+          setUser(null);
+          setIsAdmin(false);
+        } else if (currentUser) {
+          setUser(currentUser);
+          setIsAdmin(true);
+        }
+
+        return {
+          success: true,
+          isAdmin: isAdminUser,
+          needsEmailConfirmation: false,
+        };
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "Failed to create account";
+        return { success: false, isAdmin: false, needsEmailConfirmation: false, error: message };
+      }
+    }
+
     const { data, error } = await supabase.auth.signUp({ email, password });
     if (error) {
       return { success: false, isAdmin: false, needsEmailConfirmation: false, error: error.message };
@@ -115,6 +208,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const logout = useCallback(async () => {
+    if (isAppwriteProvider) {
+      if (isAppwriteReady) {
+        await appwriteAccount.deleteSession("current");
+      }
+      setUser(null);
+      setIsAdmin(false);
+      return;
+    }
+
     await supabase.auth.signOut();
     setUser(null);
     setIsAdmin(false);
