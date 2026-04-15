@@ -16,6 +16,7 @@ import DashboardLayout from "./components/dashboard/DashboardLayout";
 import DashboardProducts from "./pages/dashboard/DashboardProducts";
 import DashboardCategories from "./pages/dashboard/DashboardCategories";
 import DashboardSEO from "./pages/dashboard/DashboardSEO";
+import DashboardContent from "./pages/dashboard/DashboardContent";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -41,6 +42,7 @@ const App = () => (
                 <Route path="products" element={<DashboardProducts />} />
                 <Route path="categories" element={<DashboardCategories />} />
                 <Route path="seo" element={<DashboardSEO />} />
+                <Route path="content" element={<DashboardContent />} />
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>

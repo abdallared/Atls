@@ -15,6 +15,7 @@ import { Plus, Pencil, Trash2, Search, Filter, Upload, X, ChevronLeft, ChevronRi
 import { useToast } from "@/hooks/use-toast";
 import type { DbProduct } from "@/contexts/DataContext";
 import { resolveMediaUrl } from "@/lib/media";
+import RichTextEditor from "@/components/RichTextEditor";
 
 const DashboardProducts = () => {
   const { products, categories, brands, addProduct, updateProduct, deleteProduct } = useData();
@@ -41,13 +42,17 @@ const DashboardProducts = () => {
     name: "", name_ar: "", description: "", description_ar: "",
     price: 0, category_id: "", brand_id: "", available: true, features: "", slug: "",
     image: "", images: [] as string[],
+    meta_title: "", meta_title_ar: "", meta_description: "", meta_description_ar: "",
+    meta_keywords: "", meta_keywords_ar: "",
   });
 
   const resetForm = () => {
     setForm({ 
       name: "", name_ar: "", description: "", description_ar: "", 
       price: 0, category_id: "", brand_id: "", available: true, 
-      features: "", slug: "", image: "", images: [] 
+      features: "", slug: "", image: "", images: [],
+      meta_title: "", meta_title_ar: "", meta_description: "", meta_description_ar: "",
+      meta_keywords: "", meta_keywords_ar: "",
     });
     setEditingProduct(null);
   };
@@ -61,13 +66,16 @@ const DashboardProducts = () => {
       available: p.available,
       features: (p.features || []).join(", "), slug: p.slug,
       image: p.image || "", images: p.images || [],
+      meta_title: (p as any).meta_title || "", meta_title_ar: (p as any).meta_title_ar || "",
+      meta_description: (p as any).meta_description || "", meta_description_ar: (p as any).meta_description_ar || "",
+      meta_keywords: (p as any).meta_keywords || "", meta_keywords_ar: (p as any).meta_keywords_ar || "",
     });
     setDialogOpen(true);
   };
   
   // Filtered & Paginated Products
   const filteredProducts = useMemo(() => {
-    return products.filter(p => {
+    const filtered = products.filter(p => {
       const matchSearch = searchQuery === "" || 
         p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.name_ar.includes(searchQuery);
@@ -77,6 +85,13 @@ const DashboardProducts = () => {
         (filterAvailable === "available" && p.available) ||
         (filterAvailable === "unavailable" && !p.available);
       return matchSearch && matchCategory && matchBrand && matchAvailable;
+    });
+    
+    // Sort by created_at descending (newest first)
+    return filtered.sort((a, b) => {
+      const dateA = new Date(a.created_at || 0).getTime();
+      const dateB = new Date(b.created_at || 0).getTime();
+      return dateB - dateA;
     });
   }, [products, searchQuery, filterCategory, filterBrand, filterAvailable]);
   
@@ -120,7 +135,7 @@ const DashboardProducts = () => {
     }
 
     const slug = form.slug || form.name.toLowerCase().replace(/\s+/g, "-") + "-" + Date.now();
-    const productData = {
+    const productData: any = {
       slug,
       name: form.name, name_ar: form.name_ar,
       description: form.description, description_ar: form.description_ar,
@@ -129,6 +144,12 @@ const DashboardProducts = () => {
       images: form.images.length > 0 ? form.images : ["/placeholder.svg"],
       features: form.features.split(",").map(f => f.trim()).filter(Boolean),
       available: form.available,
+      meta_title: form.meta_title || null,
+      meta_title_ar: form.meta_title_ar || null,
+      meta_description: form.meta_description || null,
+      meta_description_ar: form.meta_description_ar || null,
+      meta_keywords: form.meta_keywords || null,
+      meta_keywords_ar: form.meta_keywords_ar || null,
     };
 
     console.log("Saving product data:", { 
@@ -265,24 +286,26 @@ const DashboardProducts = () => {
                 
                 <div>
                   <Label className="text-sm">الوصف بالإنجليزية</Label>
-                  <Textarea 
-                    value={form.description} 
-                    onChange={(e) => setForm({ ...form, description: e.target.value })}
-                    placeholder="Product description..."
-                    rows={3}
-                    className="mt-1"
-                  />
+                  <div className="mt-1">
+                    <RichTextEditor
+                      content={form.description}
+                      onChange={(content) => setForm({ ...form, description: content })}
+                      placeholder="Product description..."
+                      dir="ltr"
+                    />
+                  </div>
                 </div>
                 
                 <div>
                   <Label className="text-sm">الوصف بالعربية</Label>
-                  <Textarea 
-                    value={form.description_ar} 
-                    onChange={(e) => setForm({ ...form, description_ar: e.target.value })}
-                    placeholder="وصف المنتج..."
-                    rows={3}
-                    className="mt-1"
-                  />
+                  <div className="mt-1">
+                    <RichTextEditor
+                      content={form.description_ar}
+                      onChange={(content) => setForm({ ...form, description_ar: content })}
+                      placeholder="وصف المنتج..."
+                      dir="rtl"
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -503,6 +526,85 @@ const DashboardProducts = () => {
                   <Label htmlFor="available" className="cursor-pointer">
                     المنتج متاح للبيع
                   </Label>
+                </div>
+              </div>
+
+              {/* SEO Metadata */}
+              <div className="space-y-4">
+                <h3 className="font-semibold text-sm text-muted-foreground">SEO - تحسين محركات البحث</h3>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm">Meta Title (English)</Label>
+                    <Input 
+                      value={form.meta_title} 
+                      onChange={(e) => setForm({ ...form, meta_title: e.target.value })}
+                      placeholder="Product SEO Title"
+                      className="mt-1"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">60 حرف كحد أقصى</p>
+                  </div>
+                  
+                  <div>
+                    <Label className="text-sm">Meta Title (عربي)</Label>
+                    <Input 
+                      value={form.meta_title_ar} 
+                      onChange={(e) => setForm({ ...form, meta_title_ar: e.target.value })}
+                      placeholder="عنوان SEO للمنتج"
+                      className="mt-1"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">60 حرف كحد أقصى</p>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm">Meta Description (English)</Label>
+                    <Textarea 
+                      value={form.meta_description} 
+                      onChange={(e) => setForm({ ...form, meta_description: e.target.value })}
+                      placeholder="Brief description for search engines..."
+                      rows={2}
+                      className="mt-1"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">160 حرف كحد أقصى</p>
+                  </div>
+                  
+                  <div>
+                    <Label className="text-sm">Meta Description (عربي)</Label>
+                    <Textarea 
+                      value={form.meta_description_ar} 
+                      onChange={(e) => setForm({ ...form, meta_description_ar: e.target.value })}
+                      placeholder="وصف مختصر لمحركات البحث..."
+                      rows={2}
+                      className="mt-1"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">160 حرف كحد أقصى</p>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm">Keywords (English)</Label>
+                    <Input 
+                      value={form.meta_keywords} 
+                      onChange={(e) => setForm({ ...form, meta_keywords: e.target.value })}
+                      placeholder="keyword1, keyword2, keyword3"
+                      className="mt-1"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">مفصولة بفاصلة</p>
+                  </div>
+                  
+                  <div>
+                    <Label className="text-sm">Keywords (عربي)</Label>
+                    <Input 
+                      value={form.meta_keywords_ar} 
+                      onChange={(e) => setForm({ ...form, meta_keywords_ar: e.target.value })}
+                      placeholder="كلمة1, كلمة2, كلمة3"
+                      className="mt-1"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">مفصولة بفاصلة</p>
+                  </div>
                 </div>
               </div>
 

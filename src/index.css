@@ -2,6 +2,50 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ContentEditable Editor Styles */
+[contenteditable]:empty:before {
+  content: attr(data-placeholder);
+  color: hsl(var(--muted-foreground));
+  pointer-events: none;
+}
+
+[contenteditable] h2 {
+  font-size: 1.3em;
+  font-weight: bold;
+  margin: 0.5em 0;
+}
+
+[contenteditable] ul,
+[contenteditable] ol {
+  padding-inline-start: 2em;
+  margin: 0.5em 0;
+}
+
+[contenteditable] strong {
+  font-weight: bold;
+}
+
+[contenteditable] em {
+  font-style: italic;
+}
+
+[contenteditable] table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+}
+
+[contenteditable] table td,
+[contenteditable] table th {
+  border: 1px solid hsl(var(--border));
+  padding: 8px;
+}
+
+[contenteditable] table th {
+  background-color: hsl(var(--muted));
+  font-weight: bold;
+}
+
 @layer base {
   :root {
     --background: 210 20% 98%;

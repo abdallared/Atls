@@ -1,17 +1,33 @@
 import { useParams, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useData } from "@/contexts/DataContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, MessageCircle } from "lucide-react";
+import { ArrowRight, MessageCircle, Languages } from "lucide-react";
 import { companyInfo } from "@/data/products";
 import { resolveMediaUrl } from "@/lib/media";
+import { Helmet } from "react-helmet";
 
 const ProductDetail = () => {
   const { id } = useParams();
   const { products } = useData();
   const product = products.find((p) => p.slug === id);
+  const [showEnglish, setShowEnglish] = useState(false);
+
+  // SEO metadata
+  const metaTitle = showEnglish 
+    ? ((product as any)?.meta_title || product?.name)
+    : ((product as any)?.meta_title_ar || product?.name_ar);
+  
+  const metaDescription = showEnglish
+    ? ((product as any)?.meta_description || product?.description?.substring(0, 160))
+    : ((product as any)?.meta_description_ar || product?.description_ar?.substring(0, 160));
+  
+  const metaKeywords = showEnglish
+    ? ((product as any)?.meta_keywords || '')
+    : ((product as any)?.meta_keywords_ar || '');
 
   if (!product) {
     return (
@@ -30,6 +46,17 @@ const ProductDetail = () => {
 
   return (
     <>
+      <Helmet>
+        <title>{metaTitle}</title>
+        <meta name="description" content={metaDescription || ''} />
+        {metaKeywords && <meta name="keywords" content={metaKeywords} />}
+        <meta property="og:title" content={metaTitle} />
+        <meta property="og:description" content={metaDescription || ''} />
+        <meta property="og:image" content={resolveMediaUrl(product.image)} />
+        <meta property="og:type" content="product" />
+        <meta property="product:price:amount" content={product.price.toString()} />
+        <meta property="product:price:currency" content="LYD" />
+      </Helmet>
       <Navbar />
       <main className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-8">
@@ -61,7 +88,27 @@ const ProductDetail = () => {
               </div>
               <p className="text-sm text-muted-foreground mb-4">{product.name}</p>
               <p className="text-2xl font-bold text-primary mb-6">{product.price} د.ل</p>
-              <p className="text-muted-foreground leading-relaxed mb-6">{product.description_ar}</p>
+              
+              <div className="mb-6">
+                <div 
+                  className="text-muted-foreground leading-relaxed mb-3"
+                  dangerouslySetInnerHTML={{ 
+                    __html: showEnglish 
+                      ? (product.description || '') 
+                      : (product.description_ar || '')
+                  }}
+                  dir={showEnglish ? "ltr" : "rtl"}
+                />
+                <Button
+                  variant="default"
+                  size="sm"
+                  onClick={() => setShowEnglish(!showEnglish)}
+                  className="gap-1.5 bg-primary hover:bg-primary/90 text-xs px-3 py-1 h-auto"
+                >
+                  <Languages size={14} />
+                  {showEnglish ? "عربي" : "English"}
+                </Button>
+              </div>
 
               <div className="mb-8">
                 <h3 className="font-semibold text-foreground mb-3">المميزات</h3>
